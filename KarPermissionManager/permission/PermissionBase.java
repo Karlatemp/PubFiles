@@ -90,4 +90,8 @@ public class PermissionBase implements Permissible {
     public void clearPermissions() {
         permissions.clear();
     }
+
+    public String toString() {
+        return getClass().getSimpleName() + "@" + hashCode() + "[" + getName() + "]";
+    }
 }

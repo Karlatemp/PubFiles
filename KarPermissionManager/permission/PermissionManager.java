@@ -54,7 +54,42 @@ public class PermissionManager {
             qq_groups_admin.clear();
             fix();
             this.groups.forEach(group -> {
-                PermissionBase pb = new PermissionBase();
+                final Boolean status = group.permissions.get("*");
+                if (status != null) {
+                    groups.put(group.name, new PermissionBase() {
+                        {
+                            permissions.putAll(group.permissions);
+                        }
+
+                        @Override
+                        public boolean hasPermission(String permission) {
+                            return permission.equals("banned") ^ status;
+                        }
+
+                        @Override
+                        public Boolean hasPermission0(String perm) {
+                            return hasPermission(perm);
+                        }
+
+                        @Override
+                        public PermissionBase setName(String name) {
+                            super.setName(name);
+                            return this;
+                        }
+
+                        @Override
+                        public String toString() {
+                            return "Group{id=" + getName() + ", all-powered=" + status + "}";
+                        }
+                    }.setName(group.name));
+                    return;
+                }
+                PermissionBase pb = new PermissionBase() {
+                    @Override
+                    public String toString() {
+                        return "Group{id=" + getName() + "}";
+                    }
+                };
                 pb.registerAttach().getPermissions().putAll(group.permissions);
                 pb.setName(group.name);
                 pb.recalculatePermissions();
@@ -66,21 +101,66 @@ public class PermissionManager {
                 }
             });
             this.users.forEach(group -> {
-                PermissionBase pb = new PermissionBase();
+                final Boolean status = group.permissions.get("*");
+                if (status != null) {
+                    groups.put(group.name, new PermissionBase() {
+                        {
+                            permissions.putAll(group.permissions);
+                        }
+
+                        @Override
+                        public boolean hasPermission(String permission) {
+                            return permission.equals("banned") ^ status;
+                        }
+
+                        @Override
+                        public Boolean hasPermission0(String perm) {
+                            return hasPermission(perm);
+                        }
+
+                        @Override
+                        public PermissionBase setName(String name) {
+                            super.setName(name);
+                            return this;
+                        }
+
+                        @Override
+                        public String toString() {
+                            return "User{group=" + getName() + ", all-powered=" + status + "}";
+                        }
+                    }.setName(group.name));
+                    return;
+                }
+                PermissionBase pb = new PermissionBase() {
+                    @Override
+                    public String toString() {
+                        return "User{group=" + getName() + "}";
+                    }
+                };
                 pb.registerAttach().getPermissions().putAll(group.permissions);
                 pb.setName(group.name);
                 pb.recalculatePermissions();
                 users.put(group.id, pb);
             });
             this.qq_groups.forEach(group -> {
-                PermissionBase pb = new PermissionBase();
+                PermissionBase pb = new PermissionBase() {
+                    @Override
+                    public String toString() {
+                        return "QQGroup{id=" + group.id + ", name=" + getName() + "}";
+                    }
+                };
                 pb.registerAttach().getPermissions().putAll(group.permissions);
                 pb.setName(group.name);
                 pb.recalculatePermissions();
                 qq_groups.put(group.id, pb);
             });
             this.qq_groups_admin.forEach(group -> {
-                PermissionBase pb = new PermissionBase();
+                PermissionBase pb = new PermissionBase() {
+                    @Override
+                    public String toString() {
+                        return "QQAdminGroup{id=" + group.id + ", name=" + getName() + "}";
+                    }
+                };
                 pb.registerAttach().getPermissions().putAll(group.permissions);
                 pb.setName(group.name);
                 pb.recalculatePermissions();
